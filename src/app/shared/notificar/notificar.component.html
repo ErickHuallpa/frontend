@@ -1,0 +1,24 @@
+<div
+[class.sucess]="StatusMessage.Success"
+[class.error]="StatusMessage.Error"
+[class.warning]="StatusMessage.Warning"
+[class.info]="StatusMessage.Info"
+>
+  <span class="example-pizza-party" matSnackBarLabel>
+    {{msg}}
+  </span>
+  <span matSnackBarActions>
+    <button mat-button matSnackBarAction (click)="snackBarRef.dismissWithAction()">
+      @if(estado == StatusMessage.Success){
+        <mat-icon aria-hidden="false" aria-label="notification" fontIcon="check"></mat-icon>
+      }@else if (estado == StatusMessage.Warning) {
+        <mat-icon aria-hidden="false" aria-label="notification" fontIcon="warning"></mat-icon>
+      }@else if (estado == StatusMessage.Error) {
+        <mat-icon aria-hidden="false" aria-label="notification" fontIcon="error"></mat-icon>
+      }@else if (estado == StatusMessage.Info) {
+        <mat-icon aria-hidden="false" aria-label="notification" fontIcon="exclamation"></mat-icon>
+      }
+    </button>
+  </span>
+</div>
+
