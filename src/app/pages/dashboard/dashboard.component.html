@@ -33,6 +33,26 @@
               <button routerLink="propuesta" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Propuestas</button>
             </li>
           </ul>
+          
+          <!-- Botón Condicional según el estado de autenticación -->
+          <div>
+            <button 
+              *ngIf="isLoggedIn; else loginButton" 
+              (click)="logout()" 
+              class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-800">
+              Cerrar Sesión
+            </button>
+
+            <ng-template #loginButton>
+              <button 
+                (click)="goToLogin()" 
+                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-800">
+                Iniciar Sesión
+              </button>
+            </ng-template>
+          </div>
+
+
         </div>
     </nav>
 

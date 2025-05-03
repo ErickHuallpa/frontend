@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PartidoPolitico } from '../../models/partido-politico.model';
 import { PartidoPoliticoService } from '../../services/partido-politico.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-candidato',
@@ -20,6 +21,7 @@ export class CandidatoComponent implements OnInit {
   isLoading = true;
   isLoadingPartidos = true;
   errorMessage = '';
+  usuarioLogueado: boolean = false;
   
   showEditModal = false;
   showDeleteModal = false;
@@ -37,12 +39,22 @@ export class CandidatoComponent implements OnInit {
 
   constructor(
     private candidatoService: CandidatoService,
-    private partidoService: PartidoPoliticoService
+    private partidoService: PartidoPoliticoService,
+    private authService: AuthService,
   ) { }
 
   ngOnInit(): void {
     this.loadCandidatos();
     this.loadPartidos();
+    this.usuarioLogueado = this.authService.isLoggedIn();
+  }
+
+  verPropuestas(candidato: Candidato):void {
+    console.log('Ver Propuestas de: ', candidato.nombre);
+  }
+
+  verActividades(candidato: Candidato):void {
+    console.log('Ver Actividades de: ', candidato.nombre);
   }
 
   getPresidentes(): Candidato[] {

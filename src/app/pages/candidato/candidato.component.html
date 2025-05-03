@@ -2,28 +2,25 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-bold text-gray-800">Listado de Candidatos</h2>
-      <button (click)="openAddModal()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center">
+      <button *ngIf="usuarioLogueado" (click)="openAddModal()" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
         </svg>
         Agregar Candidato
       </button>
     </div>
-  
     <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-12">
       <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       <p class="mt-4 text-gray-600">Cargando candidatos...</p>
     </div>
-  
     <div *ngIf="errorMessage" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6">
       {{ errorMessage }}
     </div>
-  
     <div *ngIf="!isLoading && !errorMessage">
       <div *ngIf="candidatos.length === 0" class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4">
         No se encontraron candidatos registrados.
       </div>
-
+      
       <div class="mb-12" *ngIf="getPresidentes().length > 0">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           <div *ngFor="let candidato of getPresidentesOrdenados()" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -31,18 +28,28 @@
                  [style.background]="'url(' + getPartidoLogo(candidato.partidoId) + ')'"
                  style="background-size: cover; background-position: center; height: 100px;">
               <div class="absolute inset-0 bg-black bg-opacity-30"></div>
-
               <div class="w-24 h-24 flex items-center justify-center bg-white rounded-full shadow-inner overflow-hidden border-2 border-white relative z-10">
                 <img [src]="candidato.foto || 'https://cdn-icons-png.flaticon.com/512/5172/5172186.png'" 
                      [alt]="candidato.nombre + ' foto'" 
                      class="object-cover w-full h-full"
                      (error)="handleImageError($event)">
               </div>
-
             </div>
-
             <div class="p-6">
-              <h3 class="text-xl font-bold text-gray-800 mb-2">{{ candidato.nombre }}</h3>
+              <h3 class="text-xl font-bold text-gray-800 mb-2"><span>{{ candidato.nombre }}</span></h3>
+                <ng-container *ngIf="usuarioLogueado">
+                  <button (click)="openEditModal(candidato)" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                      <path fill-rule="evenodd" d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z" clip-rule="evenodd"/>
+                      <path fill-rule="evenodd" d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z" clip-rule="evenodd"/>
+                    </svg>
+                  </button>
+                  <button (click)="openDeleteModal(candidato)" class="text-red-600 hover:text-red-800 text-sm font-medium">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                      <path fill-rule="evenodd" d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z" clip-rule="evenodd"/>
+                    </svg>                    
+                  </button>
+                </ng-container>
               <div class="flex justify-between items-center mb-2">
                 <span class="text-sm text-gray-600">Edad: {{ candidato.edad }}</span>
                 <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
@@ -56,19 +63,19 @@
                 <span>Votos: {{ candidato.votos || 0 }}</span>
               </div>
             </div>
-
             <div class="bg-gray-50 px-6 py-3 flex justify-end space-x-2">
-              <button (click)="openEditModal(candidato)" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                Editar
+              
+              <button (click)="verPropuestas(candidato)" class="text-green-600 hover:text-green-800 text-sm font-medium">
+                Ver Propuestas
               </button>
-              <button (click)="openDeleteModal(candidato)" class="text-red-600 hover:text-red-800 text-sm font-medium">
-                Eliminar
+              <button (click)="verActividades(candidato)" class="text-yellow-600 hover:text-yellow-800 text-sm font-medium">
+                Ver Actividades
               </button>
+
             </div>
           </div>
         </div>
       </div>
-
       <div class="mb-12" *ngIf="getGobernadores().length > 0">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           <div *ngFor="let candidato of getGobernadoresOrdenados()" class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -83,7 +90,6 @@
                      (error)="handleImageError($event)">
               </div>
             </div>
-
             <div class="p-6">
               <h3 class="text-xl font-bold text-gray-800 mb-2">{{ candidato.nombre }}</h3>
               <div class="flex justify-between items-center mb-2">
@@ -99,7 +105,6 @@
                 <span>Votos: {{ candidato.votos || 0 }}</span>
               </div>
             </div>
-
             <div class="bg-gray-50 px-6 py-3 flex justify-end space-x-2">
               <button (click)="openEditModal(candidato)" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
                 Editar
@@ -112,7 +117,6 @@
         </div>
       </div>
     </div>
-  
     <div *ngIf="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
         <div class="p-6">
@@ -127,7 +131,6 @@
               <input [(ngModel)]="candidatoEditado.nombre" id="nombre" name="nombre" required 
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
             </div>
-            
             <div class="mb-4">
               <label class="block text-gray-700 text-sm font-bold mb-2" for="edad">
                 Edad
@@ -135,7 +138,6 @@
               <input type="number" [(ngModel)]="candidatoEditado.edad" id="edad" name="edad" required min="18"
                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
             </div>
-            
             <div class="mb-4">
               <label class="block text-gray-700 text-sm font-bold mb-2" for="cargo">
                 Cargo
@@ -147,7 +149,6 @@
                 <option value="Gobernador">Gobernador</option>
               </select>
             </div>
-            
             <div class="mb-4">
               <label class="block text-gray-700 text-sm font-bold mb-2" for="partidoId">
                 Partido Político
@@ -160,8 +161,6 @@
                 </option>
               </select>
             </div>
-
-            <!-- AQUÍ VA EL BLOQUE DE LA FOTO -->
             <div class="mb-4">
               <label class="block text-gray-700 text-sm font-bold mb-2" for="foto">
                 URL de la Foto
@@ -173,9 +172,7 @@
                     alt="Vista previa" class="h-20 w-20 object-cover rounded"
                     (error)="candidatoEditado.foto = ''">
               </div>
-            </div>
-            <!-- FIN DEL BLOQUE DE LA FOTO -->
-            
+            </div>            
             <div class="flex justify-end space-x-3">
               <button type="button" (click)="closeEditModal()" 
                       class="px-4 py-2 text-gray-600 hover:text-gray-800">
@@ -190,7 +187,6 @@
         </div>
       </div>
     </div>
-  
     <div *ngIf="showDeleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
         <div class="p-6">

@@ -7,11 +7,12 @@ import {
 } from '../../models/partido-politico.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-partido-politico',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './partido-politico.component.html',
   styleUrls: ['./partido-politico.component.css']
 })
