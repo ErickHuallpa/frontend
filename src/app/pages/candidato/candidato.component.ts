@@ -1,12 +1,16 @@
 // src/app/pages/candidato/candidato.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CandidatoService } from '../../services/candidato.service';
-import { Candidato, CandidatoBase, getIdString } from '../../models/candidato.model';
+import { Candidato, CandidatoBase, CandidatoId, getIdString } from '../../models/candidato.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PartidoPolitico } from '../../models/partido-politico.model';
 import { PartidoPoliticoService } from '../../services/partido-politico.service';
 import { AuthService } from '../../services/auth.service';
+import { CreatePropuestaDto, Propuesta } from '../../models/propuesta.model';
+import { PropuestaService } from '../../services/propuesta.service';
+import { Actividad } from '../../models/actividad.model';
+import { CronogramaService } from '../../services/cronograma.service';
 
 @Component({
   selector: 'app-candidato',
@@ -37,10 +41,40 @@ export class CandidatoComponent implements OnInit {
   };
   getIdString = getIdString;
 
+  showPropuestasModal = false;
+  showPropuestaEditModal = false;
+  showDeletePropuestaModal = false;
+  isLoadingPropuestas = false;
+  propuestas: Propuesta[] = [];
+  isNewPropuesta = false;
+  selectedPropuesta: Propuesta | null = null;
+  propuestaEditada: CreatePropuestaDto = {
+    titulo: '',
+    descripcion: '',
+    candidatoId: ''
+  };
+
+  showActividadesModal = false;
+  showActividadEditModal = false;
+  showDeleteActividadModal = false;
+  isLoadingActividades = false;
+  actividades: Actividad[] = [];
+  isNewActividad = false;
+  selectedActividad: Actividad | null = null;
+  actividadEditada: any = {
+    titulo: '',
+    descripcion: '',
+    fecha: new Date().toISOString().slice(0, 16),
+    estado: 'pendiente',
+    candidatoId: ''
+  };
+
   constructor(
     private candidatoService: CandidatoService,
     private partidoService: PartidoPoliticoService,
     private authService: AuthService,
+    private propuestaService: PropuestaService,
+    private cronogramaService: CronogramaService,
   ) { }
 
   ngOnInit(): void {
@@ -49,12 +83,292 @@ export class CandidatoComponent implements OnInit {
     this.usuarioLogueado = this.authService.isLoggedIn();
   }
 
-  verPropuestas(candidato: Candidato):void {
-    console.log('Ver Propuestas de: ', candidato.nombre);
+  verPropuestas(candidato: Candidato): void {
+    this.selectedCandidato = candidato;
+    this.loadPropuestas(candidato._id);
+    this.showPropuestasModal = true;
+  }
+  
+  loadPropuestas(candidatoId: CandidatoId): void {
+    this.isLoadingPropuestas = true;
+    const idString = getIdString(candidatoId);
+    
+    this.propuestaService.getPropuestasPorCandidato(idString).subscribe({
+      next: (propuestas) => {
+        this.propuestas = propuestas;
+        this.isLoadingPropuestas = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar propuestas:', error);
+        this.isLoadingPropuestas = false;
+        this.errorMessage = 'Error al cargar las propuestas';
+      }
+    });
+  }
+  
+  closePropuestasModal(): void {
+    this.showPropuestasModal = false;
+    this.selectedCandidato = null;
+    this.propuestas = [];
+  }
+  
+  openAddPropuestaModal(): void {
+    if (!this.selectedCandidato) return;
+    
+    this.isNewPropuesta = true;
+    this.propuestaEditada = {
+      titulo: '',
+      descripcion: '',
+      candidatoId: getIdString(this.selectedCandidato._id)
+    };
+    this.showPropuestaEditModal = true;
+  }
+  
+  openEditPropuestaModal(propuesta: Propuesta): void {
+    this.isNewPropuesta = false;
+    this.selectedPropuesta = propuesta;
+    this.propuestaEditada = {
+      titulo: propuesta.titulo,
+      descripcion: propuesta.descripcion,
+      candidatoId: propuesta.candidatoId
+    };
+    this.showPropuestaEditModal = true;
+  }
+  
+  closePropuestaEditModal(): void {
+    this.showPropuestaEditModal = false;
+    this.selectedPropuesta = null;
+  }
+  
+  openDeletePropuestaModal(propuesta: Propuesta): void {
+    this.selectedPropuesta = propuesta;
+    this.showDeletePropuestaModal = true;
+  }
+  
+  closeDeletePropuestaModal(): void {
+    this.showDeletePropuestaModal = false;
+    this.selectedPropuesta = null;
+  }
+  
+  guardarPropuesta(): void {
+    if (this.isNewPropuesta) {
+      this.crearPropuesta();
+    } else {
+      this.actualizarPropuesta();
+    }
+  }
+  
+  crearPropuesta(): void {
+    if (!this.selectedCandidato) return;
+    
+    this.propuestaService.createPropuesta(this.propuestaEditada).subscribe({
+      next: (nuevaPropuesta) => {
+        this.propuestas.push(nuevaPropuesta);
+        this.closePropuestaEditModal();
+      },
+      error: (error) => {
+        console.error('Error al crear propuesta:', error);
+        this.errorMessage = 'Error al crear la propuesta';
+      }
+    });
+  }
+  
+  actualizarPropuesta(): void {
+    if (!this.selectedPropuesta) return;
+    
+    const propuestaId = getIdString(this.selectedPropuesta._id);
+    this.propuestaService.updatePropuesta(propuestaId, this.propuestaEditada).subscribe({
+      next: (propuestaActualizada) => {
+        const index = this.propuestas.findIndex(p => getIdString(p._id) === propuestaId);
+        if (index !== -1) {
+          this.propuestas[index] = propuestaActualizada;
+        }
+        this.closePropuestaEditModal();
+      },
+      error: (error) => {
+        console.error('Error al actualizar propuesta:', error);
+        this.errorMessage = 'Error al actualizar la propuesta';
+      }
+    });
+  }
+  
+  eliminarPropuesta(): void {
+    if (!this.selectedPropuesta) return;
+    
+    const propuestaId = getIdString(this.selectedPropuesta._id);
+    this.propuestaService.deletePropuesta(propuestaId).subscribe({
+      next: () => {
+        this.propuestas = this.propuestas.filter(p => getIdString(p._id) !== propuestaId);
+        this.closeDeletePropuestaModal();
+      },
+      error: (error) => {
+        console.error('Error al eliminar propuesta:', error);
+        this.errorMessage = 'Error al eliminar la propuesta';
+      }
+    });
   }
 
-  verActividades(candidato: Candidato):void {
-    console.log('Ver Actividades de: ', candidato.nombre);
+
+  verActividades(candidato: Candidato): void {
+    this.selectedCandidato = candidato;
+    this.loadActividades(candidato._id);
+    this.showActividadesModal = true;
+  }
+  
+  loadActividades(candidatoId: CandidatoId): void {
+    this.isLoadingActividades = true;
+    const idString = getIdString(candidatoId);
+    
+    this.cronogramaService.getActividadesPorCandidato(idString).subscribe({
+      next: (actividades) => {
+        this.actividades = actividades.sort((a, b) => {
+          const dateA = new Date(a.fecha).getTime();
+          const dateB = new Date(b.fecha).getTime();
+          return dateA - dateB;
+        });
+        this.isLoadingActividades = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar actividades:', error);
+        this.isLoadingActividades = false;
+        this.errorMessage = 'Error al cargar las actividades';
+      }
+    });
+  }
+  
+  closeActividadesModal(): void {
+    this.showActividadesModal = false;
+    this.selectedCandidato = null;
+    this.actividades = [];
+  }
+  
+  openAddActividadModal(): void {
+    if (!this.selectedCandidato) return;
+    
+    this.isNewActividad = true;
+    this.actividadEditada = {
+      titulo: '',
+      descripcion: '',
+      fecha: new Date().toISOString().slice(0, 16),
+      estado: 'pendiente',
+      candidatoId: getIdString(this.selectedCandidato._id)
+    };
+    this.showActividadEditModal = true;
+  }
+  
+  openEditActividadModal(actividad: Actividad): void {
+    this.isNewActividad = false;
+    this.selectedActividad = actividad;
+    this.actividadEditada = {
+      titulo: actividad.titulo,
+      descripcion: actividad.descripcion,
+      fecha: new Date(actividad.fecha).toISOString().slice(0, 16),
+      estado: actividad.estado,
+      candidatoId: actividad.candidatoId
+    };
+    this.showActividadEditModal = true;
+  }
+  
+  closeActividadEditModal(): void {
+    this.showActividadEditModal = false;
+    this.selectedActividad = null;
+  }
+  
+  openDeleteActividadModal(actividad: Actividad): void {
+    this.selectedActividad = actividad;
+    this.showDeleteActividadModal = true;
+  }
+  
+  closeDeleteActividadModal(): void {
+    this.showDeleteActividadModal = false;
+    this.selectedActividad = null;
+  }
+  
+  guardarActividad(): void {
+    if (this.isNewActividad) {
+      this.crearActividad();
+    } else {
+      this.actualizarActividad();
+    }
+  }
+  
+  crearActividad(): void {
+    if (!this.selectedCandidato) return;
+    
+    const actividadData = {
+      ...this.actividadEditada,
+      fecha: new Date(this.actividadEditada.fecha).toISOString()
+    };
+  
+    this.cronogramaService.createActividad(actividadData).subscribe({
+      next: (nuevaActividad) => {
+        this.actividades.push(nuevaActividad);
+        this.actividades = this.actividades.sort((a, b) => {
+          const dateA = new Date(a.fecha).getTime();
+          const dateB = new Date(b.fecha).getTime();
+          return dateA - dateB;
+        });
+        this.closeActividadEditModal();
+      },
+      error: (error) => {
+        console.error('Error al crear actividad:', error);
+        this.errorMessage = 'Error al crear la actividad';
+      }
+    });
+  }
+  
+  actualizarActividad(): void {
+    if (!this.selectedActividad) return;
+    
+    const actividadId = getIdString(this.selectedActividad._id);
+    const actividadData = {
+      ...this.actividadEditada,
+      fecha: new Date(this.actividadEditada.fecha).toISOString()
+    };
+  
+    this.cronogramaService.updateActividad(actividadId, actividadData).subscribe({
+      next: (actividadActualizada) => {
+        const index = this.actividades.findIndex(a => getIdString(a._id) === actividadId);
+        if (index !== -1) {
+          this.actividades[index] = actividadActualizada;
+        }
+        this.actividades = this.actividades.sort((a, b) => {
+          const dateA = new Date(a.fecha).getTime();
+          const dateB = new Date(b.fecha).getTime();
+          return dateA - dateB;
+        });
+        this.closeActividadEditModal();
+      },
+      error: (error) => {
+        console.error('Error al actualizar actividad:', error);
+        this.errorMessage = 'Error al actualizar la actividad';
+      }
+    });
+  }
+  
+  eliminarActividad(): void {
+    if (!this.selectedActividad) return;
+    
+    const actividadId = getIdString(this.selectedActividad._id);
+    this.cronogramaService.deleteActividad(actividadId).subscribe({
+      next: () => {
+        this.actividades = this.actividades.filter(a => getIdString(a._id) !== actividadId);
+        this.closeDeleteActividadModal();
+      },
+      error: (error) => {
+        console.error('Error al eliminar actividad:', error);
+        this.errorMessage = 'Error al eliminar la actividad';
+      }
+    });
+  }
+  
+  getEstadoTexto(estado: string): string {
+    switch(estado) {
+      case 'pendiente': return 'Pendiente';
+      case 'en_progreso': return 'En progreso';
+      case 'completado': return 'Completado';
+      default: return estado;
+    }
   }
 
   getPresidentes(): Candidato[] {

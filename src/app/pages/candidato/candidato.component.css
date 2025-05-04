@@ -1,0 +1,38 @@
+.modal-content {
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .propuesta-card {
+    transition: all 0.3s ease;
+  }
+  .propuesta-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+.border-yellow-500 {
+    border-color: #eab308;
+  }
+  .border-blue-500 {
+    border-color: #3b82f6;
+  }
+  .border-green-500 {
+    border-color: #10b981;
+  }
+  .bg-yellow-100 {
+    background-color: #fef9c3;
+  }
+  .bg-blue-100 {
+    background-color: #dbeafe;
+  }
+  .bg-green-100 {
+    background-color: #d1fae5;
+  }
+  .text-yellow-800 {
+    color: #92400e;
+  }
+  .text-blue-800 {
+    color: #1e40af;
+  }
+  .text-green-800 {
+    color: #065f46;
+  }

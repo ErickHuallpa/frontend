@@ -1,3 +1,4 @@
+// src/models/propuesta.model.ts
 export interface Propuesta {
     _id: string | { $oid: string };
     titulo: string;
