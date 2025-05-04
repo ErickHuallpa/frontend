@@ -1,0 +1,14 @@
+/* Animación para las barras de votación */
+@keyframes fillBar {
+    0% {
+      height: 0;
+    }
+    100% {
+      height: 100%;
+    }
+  }
+  
+  .animate-fill {
+    animation: fillBar 1s ease-out;
+  }
+  

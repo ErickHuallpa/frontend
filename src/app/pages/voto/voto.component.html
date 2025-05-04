@@ -1,0 +1,85 @@
+<div class="p-4">
+
+  <div class="flex justify-between items-start w-full px-8">
+    <div class="flex flex-col gap-4 w-1/2 max-w-md">
+      <label for="cedula" class="text-lg font-semibold">Ingrese Cédula de Identidad</label>
+      <input id="cedula" type="text" [(ngModel)]="cedula" autocomplete="off" class="border rounded p-2" placeholder="Ingresar Cédula de identidad...."/>
+      <button
+        (click)="validarCedula()"
+        class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+      >
+        Validar datos
+      </button>
+      <div *ngIf="error" class="text-red-600">{{ error }}</div>
+    </div>
+    <div class="w-1/2 border-red-500" *ngIf="persona">
+      <h2 class="text-xl font-bold mb-4">Datos de la persona</h2>
+      <p><strong>Nombres:</strong> {{ persona.nombres }}</p>
+      <p><strong>Apellidos:</strong> {{ persona.apellidos }}</p>
+      <p><strong>Cédula de identidad:</strong> {{ persona.cedulaIdentidad }}</p>
+      <p><strong>Ciudad:</strong> {{ persona.ciudad }}</p>
+      <p><strong>Fecha Nacimiento:</strong> {{ persona.fechaNacimiento | date }}</p>
+      <p><strong>¿Ya votó?:</strong> {{ persona.yaVoto ? 'Sí' : 'No' }}</p>
+    </div>
+  </div>
+  <div
+    *ngIf="persona && !persona.yaVoto"
+    class="mt-8 bg-white p-4 shadow-lg rounded max-h-[70vh] overflow-y-auto">
+    <h2 class="text-xl font-bold mb-4">Papeleta de Votación</h2>
+    <div class="grid grid-cols-5 gap-4 mb-4">
+      <div *ngFor="let candidato of candidatosPresidente"
+        class="relative rounded-lg shadow-lg hover:shadow-xl transition-all ease-in-out duration-300"
+        [style.background]="'url(' + getPartidoLogo(candidato.partidoId) + ')'"
+        style="background-size: cover; background-position: center; height: 250px;">
+        <div class="absolute bottom-4 left-4 right-4 p-4 bg-white bg-opacity-90 rounded-lg shadow-lg">
+          <img *ngIf="candidato.foto" [src]="candidato.foto" alt="Foto" class="w-24 h-24 object-cover rounded-full mb-4 border-4 border-white shadow-md mx-auto"/>
+          <p class="font-semibold text-lg text-gray-900 text-center">{{ candidato.nombre }}</p>
+          <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+            {{ getSiglasDelPartido(candidato.partidoId) }}
+          </span>
+          <p class="text-sm text-gray-700 text-center"> Candidato a: {{ candidato.cargo }}</p>
+          <div class="mt-4 flex items-center justify-center">
+            <input 
+              type="checkbox" 
+              [checked]="isCandidatoPresidenteSeleccionado(candidato)" 
+              (change)="seleccionarCandidatoPresidente(candidato, $event)" 
+              class="cursor-pointer border-2 border-blue-500 rounded-md p-2 focus:ring-2 focus:ring-blue-300 text-4xl transition-all ease-in-out duration-200"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-5 gap-4">
+      <div *ngFor="let candidato of candidatosGobernador"
+        class="relative rounded-lg shadow-lg hover:shadow-xl transition-all ease-in-out duration-300"
+        [style.background]="'url(' + getPartidoLogo(candidato.partidoId) + ')'"
+        style="background-size: cover; background-position: center; height: 250px;">
+        <div class="absolute bottom-4 left-4 right-4 p-4 bg-white bg-opacity-90 rounded-lg shadow-lg">
+          <img *ngIf="candidato.foto" [src]="candidato.foto" alt="Foto" class="w-24 h-24 object-cover rounded-full mb-4 border-4 border-white shadow-md mx-auto"/>
+          <p class="font-semibold text-lg text-gray-900 text-center">{{ candidato.nombre }}</p>
+          <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
+            {{ getSiglasDelPartido(candidato.partidoId) }}
+          </span>
+          <p class="text-sm text-gray-700 text-center">Candidato a: {{ candidato.cargo }}</p>
+          <div class="mt-4 flex items-center justify-center">
+            <input 
+              type="checkbox" 
+              [checked]="isCandidatoGobernadorSeleccionado(candidato)" 
+              (change)="seleccionarCandidatoGobernador(candidato, $event)" 
+              class="cursor-pointer border-2 border-blue-500 rounded-md p-2 focus:ring-2 focus:ring-blue-300 transition-all ease-in-out duration-200"
+            />
+            <label class="text-sm text-gray-700 ml-2">Seleccionar</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mt-4 text-right">
+      <button
+        (click)="enviarVoto()"
+        class="bg-green-600 text-white py-2 px-6 rounded hover:bg-green-700">
+        Confirmar Voto
+      </button>
+      <div *ngIf="mensajeExito" class="text-green-600 mt-4">{{ mensajeExito }}</div>
+    </div>  
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="p-6 flex justify-center items-center bg-gray-100 min-h-screen">
+    <div class="w-full max-w-7xl p-6 bg-white rounded-lg shadow-xl">
+      <h2 class="text-3xl font-semibold text-gray-800 mb-6">Candidatos a Presidente</h2>
+      <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-6 mb-10">
+        <div *ngFor="let c of presidentes" class="flex flex-col items-center">
+          <div class="w-6 h-32 bg-gray-200 rounded flex items-end mb-2">
+            <div
+              class="bg-blue-500 w-full rounded-t transition-all duration-500 ease-in-out"
+              [ngStyle]="{ height: calcularPorcentaje(c.votos, presidentes) + '%' }"
+              [ngClass]="{ 'animate-fill': true }"
+            ></div>
+          </div>
+          <img *ngIf="c.foto" [src]="c.foto" alt="Foto" class="w-20 h-20 object-cover rounded-full mb-3 border-4 border-blue-500 shadow-lg" />
+          <div class="text-center text-sm font-semibold text-gray-700 mb-1">{{ c.nombre }}</div>
+          <div class="text-xs text-gray-500">{{ c.votos || 0 }} votos</div>
+        </div>
+      </div>
+  
+      <h2 class="text-3xl font-semibold text-gray-800 mb-6">Candidatos a Gobernador</h2>
+      <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-6">
+        <div *ngFor="let c of gobernadores" class="flex flex-col items-center">
+          <div class="w-6 h-32 bg-gray-200 rounded flex items-end mb-2">
+            <div
+              class="bg-green-500 w-full rounded-t transition-all duration-500 ease-in-out"
+              [ngStyle]="{ height: calcularPorcentaje(c.votos, gobernadores) + '%' }"
+              [ngClass]="{ 'animate-fill': true }"
+            ></div>
+          </div>
+          <img *ngIf="c.foto" [src]="c.foto" alt="Foto" class="w-20 h-20 object-cover rounded-full mb-3 border-4 border-green-500 shadow-lg" />
+          <div class="text-center text-sm font-semibold text-gray-700 mb-1">{{ c.nombre }}</div>
+          <div class="text-xs text-gray-500">{{ c.votos || 0 }} votos</div>
+        </div>
+      </div>
+  
+      <h2 class="text-3xl font-semibold text-gray-800 mb-6 mt-10">Partidos Políticos</h2>
+      <div class="space-y-6">
+        <div *ngFor="let partido of partidosPoliticos" class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg shadow-md hover:bg-gray-200 transition-all duration-300">
+          <img *ngIf="partido.logoUrl" [src]="partido.logoUrl" alt="Logo del Partido" class="w-16 h-16 object-cover rounded-full" />
+          <div class="text-left">
+            <div class="text-lg font-semibold text-gray-800">{{ partido.nombre }}</div>
+            <div class="text-sm text-gray-600 mt-1">{{ partido.descripcion }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

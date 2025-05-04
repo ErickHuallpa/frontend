@@ -8,6 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-partido-politico',
@@ -20,7 +21,8 @@ export class PartidoPoliticoComponent implements OnInit {
   partidos: PartidoPolitico[] = [];
   isLoading = true;
   errorMessage = '';
-  
+  usuarioLogueado: boolean = false;
+
   showEditModal = false;
   showDeleteModal = false;
   isNewPartido = false;
@@ -40,10 +42,14 @@ export class PartidoPoliticoComponent implements OnInit {
     siglas: ''
   };
 
-  constructor(private partidoService: PartidoPoliticoService) { }
+  constructor(
+    private partidoService: PartidoPoliticoService,
+    private authService: AuthService,
+  ) { }
 
   ngOnInit(): void {
     this.loadPartidosPoliticos();
+    this.usuarioLogueado = this.authService.isLoggedIn();
   }
 
   searchPartidos(): void {

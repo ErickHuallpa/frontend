@@ -33,8 +33,8 @@ export class AuthService {
   logout() {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('access_token');
+      location.href = '/dashboard'; // Redirección + recarga
     }
-    this.router.navigate(['/login']);
   }
   
   isLoggedIn(): boolean {
