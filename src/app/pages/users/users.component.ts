@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/user.service';
-import { User } from '../../models/user.model';
+import { getIdString, User } from '../../models/user.model';
 import { AuthService } from '../../services/auth.service';
-import { PartidoPoliticoService } from '../../services/partido-politico.service'; // Importa el servicio
+import { PartidoPoliticoService } from '../../services/partido-politico.service';
 import { PartidoPolitico } from '../../models/partido-politico.model';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -21,6 +21,8 @@ export class UsersComponent implements OnInit {
   isLoading: boolean = true;
   errorMessage: string = '';
   isSuperAdmin: boolean = false;
+
+  getIdString = getIdString;
 
   isEditModalOpen: boolean = false;
   isDeleteModalOpen: boolean = false;
@@ -89,7 +91,7 @@ export class UsersComponent implements OnInit {
     this.isDeleteModalOpen = false;
   }
 
-  onDelete(id: string): void {
+  onDelete(id: string | { $oid: string }): void {
     this.userService.deleteUser(id).subscribe(
       (response) => {
         if (response.success) {
@@ -105,8 +107,12 @@ export class UsersComponent implements OnInit {
     );
   }
 
-  onUpdate(id: string, updatedUser: Partial<User>): void {
-    this.userService.updateUser(id, updatedUser).subscribe(
+  onUpdate(id: string | { $oid: string }, updatedUser: Partial<User>): void {
+    const userId = getIdString(id);
+    const userToUpdate = { ...updatedUser };
+    delete (userToUpdate as any)._id;
+  
+    this.userService.updateUserWithId(userId, userToUpdate).subscribe(
       (response) => {
         if (response.success) {
           this.loadUsers();
@@ -120,4 +126,5 @@ export class UsersComponent implements OnInit {
       }
     );
   }
+    
 }

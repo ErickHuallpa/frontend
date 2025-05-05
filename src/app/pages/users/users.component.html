@@ -10,14 +10,13 @@
         <p class="text-sm text-gray-400">{{ user.partidoId || 'No asignado' }}</p>
       </div>
       <div class="flex space-x-2">
-        <button *ngIf="(rolUsuario === 'admin')" (click)="openEditModal(user)" 
-                class="text-blue-500 hover:text-blue-700">
+        <button *ngIf="(rolUsuario === 'admin')" (click)="openEditModal(user)"  class="text-blue-500 hover:text-blue-700">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                   d="M12 4v16m8-8H4" />
           </svg>
         </button>
-        <button *ngIf="(rolUsuario === 'admin')" (click)="openDeleteModal(user._id)" 
+        <button *ngIf="(rolUsuario === 'admin')" (click)="openDeleteModal(getIdString(user._id))" 
                 class="text-red-500 hover:text-red-700">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 

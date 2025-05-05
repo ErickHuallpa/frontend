@@ -1,4 +1,3 @@
-// src/models/candidato.model.ts
 export interface MongoDBObjectId {
     $oid: string;
   }

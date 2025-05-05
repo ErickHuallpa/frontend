@@ -1,4 +1,3 @@
-// src/services/candidato.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -47,7 +46,6 @@ export class CandidatoService {
   }
 
   updateCandidato(id: string, candidato: CandidatoBase): Observable<Candidato> {
-    // No incluir el _id en el cuerpo de la solicitud
     const candidatoSinId = {...candidato};
     return this.http.put<{data: Candidato}>(`${this.apiUrl}/${id}`, candidatoSinId).pipe(
       map(response => response.data)
@@ -63,7 +61,6 @@ export class CandidatoService {
   }
 
   private normalizeCandidato(candidato: Candidato): Candidato {
-    // Si _id es un objeto MongoDB, convertirlo a string
     if (candidato._id && typeof candidato._id === 'object') {
       return {
         ...candidato,
