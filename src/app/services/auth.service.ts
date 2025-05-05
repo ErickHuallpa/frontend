@@ -30,10 +30,29 @@ export class AuthService {
     return null;
   }
 
+  getDecodedToken() {
+    const token = this.getToken();
+    if (token) {
+      const payload = atob(token.split('.')[1]);
+      return JSON.parse(payload);
+    }
+    return null;
+  }
+  
+  getRole(){
+    const decodedToken = this.getDecodedToken();
+    return decodedToken ? decodedToken.role : null;
+  }
+
+  getPartidoId(){
+    const decodedToken = this.getDecodedToken();
+    return decodedToken ? decodedToken.partidoId : null;
+  }
+
   logout() {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('access_token');
-      location.href = '/dashboard'; // Redirección + recarga
+      location.href = '/dashboard';
     }
   }
   

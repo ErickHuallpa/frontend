@@ -1,16 +1,15 @@
 <div class="min-h-screen flex flex-col">
-    <div class="flex justify-between items-center px-6 pt-5">
-      <p class="text-2xl text-green-800 custom-font">Órgano Electoral Plurinacional</p>
-      <div class="flex items-center space-x-4">
-        <button routerLink="/dashboard/voto" class="bg-black text-white px-4 py-2 rounded">Votar</button>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_oep.png/1200px-Logo_oep.png" alt="Logo" class="h-16 w-auto">
-      </div>
+  <div class="flex justify-between items-center px-6 pt-5 relative">
+    <p class="text-2xl text-green-800 custom-font z-10"><u>Órgano Electoral Plurinacional</u></p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Escudo_de_Bolivia.svg/1200px-Escudo_de_Bolivia.svg.png" alt="Escudo de Bolivia" class="h-24 w-auto absolute left-1/2 transform -translate-x-1/2 z-0">
+    <div class="flex items-center space-x-4 z-10">
+      <button routerLink="/dashboard/voto" class="bg-black text-white px-4 py-2 rounded">Votar</button>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_oep.png/1200px-Logo_oep.png" alt="Logo" class="h-16 w-auto">
     </div>
-  
+  </div>
     <header class="text-black text-center">
       <h1 class="text-4xl font-bold custom-font">Elecciones Presidenciales Bolivia 2025</h1>
     </header>
-  
     <nav class="bg-green-800 text-white p-3">
         <div class="flex items-center justify-between">
           <button class="flex items-center space-x-1 hover:text-yellow-400" routerLink="/dashboard">
@@ -26,6 +25,15 @@
             <li>
               <button routerLink="candidatos" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Candidatos</button>
             </li>
+            <li>
+              <button *ngIf="(rolUsuario === 'admin')" routerLink="users" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Usuarios</button>
+            </li>
+            <li>
+              <button *ngIf="(rolUsuario === 'admin')" routerLink="dia-eleccion" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Dia elección</button>
+            </li>
+            <li>
+              <button *ngIf="(rolUsuario === 'admin')" routerLink="persona" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Persona</button>
+            </li>
           </ul>
           
           <div>
@@ -35,7 +43,6 @@
               class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-800">
               Cerrar Sesión
             </button>
-
             <ng-template #loginButton>
               <button 
                 (click)="goToLogin()" 
@@ -44,8 +51,6 @@
               </button>
             </ng-template>
           </div>
-
-
         </div>
     </nav>
 

@@ -1,0 +1,14 @@
+/* src/app/pages/users/users.component.css */
+.card-header {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .card-actions button {
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .card-actions button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  

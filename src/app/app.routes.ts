@@ -6,6 +6,9 @@ import { LoginComponent } from './pages/login/login.component';
 import { CandidatoComponent } from './pages/candidato/candidato.component';
 import { VotoComponent } from './pages/voto/voto.component';
 import { HomeComponent } from './pages/home/home.component';
+import { UsersComponent } from './pages/users/users.component';
+import { DiaEleccionComponent } from './pages/dia-eleccion/dia-eleccion.component';
+import { PersonaComponent } from './pages/persona/persona.component';
 
 export const routes: Routes = [
   {
@@ -16,6 +19,9 @@ export const routes: Routes = [
       { path: 'candidatos', component: CandidatoComponent },
       { path: 'voto', component: VotoComponent },
       { path: 'home', component: HomeComponent },
+      { path: 'users', component: UsersComponent},
+      { path: 'dia-eleccion', component: DiaEleccionComponent },
+      { path: 'persona', component: PersonaComponent },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
     ],
   },

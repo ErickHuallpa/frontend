@@ -1,0 +1,67 @@
+<div *ngIf="isLoading" class="text-center">Cargando...</div>
+<div *ngIf="errorMessage" class="text-center text-red-500">{{ errorMessage }}</div>
+
+<div *ngIf="!isLoading && !errorMessage" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  <div *ngFor="let user of users" class="bg-white shadow-md rounded-lg overflow-hidden p-4">
+    <div class="flex justify-between items-center">
+      <div>
+        <h3 class="text-xl font-semibold text-gray-800">{{ user.username }}</h3>
+        <p class="text-sm text-gray-500">{{ user.role | titlecase }}</p>
+        <p class="text-sm text-gray-400">{{ user.partidoId || 'No asignado' }}</p>
+      </div>
+      <div class="flex space-x-2">
+        <button *ngIf="(rolUsuario === 'admin')" (click)="openEditModal(user)" 
+                class="text-blue-500 hover:text-blue-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M12 4v16m8-8H4" />
+          </svg>
+        </button>
+        <button *ngIf="(rolUsuario === 'admin')" (click)="openDeleteModal(user._id)" 
+                class="text-red-500 hover:text-red-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                  d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="isEditModalOpen" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+  <div class="bg-white rounded-lg p-6 w-96">
+    <h3 class="text-xl mb-4">Editar Usuario</h3>
+    <form (ngSubmit)="onUpdate(editUser._id, editUser)" #editForm="ngForm">
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Username</label>
+        <input [(ngModel)]="editUser.username" name="username" class="w-full px-4 py-2 border rounded-lg" required />
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Role</label>
+        <select [(ngModel)]="editUser.role" name="role" class="w-full px-4 py-2 border rounded-lg" required>
+          <option value="">Selecciona un rol....</option>
+          <option value="user">Usuario</option>
+          <option value="admin">Administrador</option>
+          <option value="adminpar">Administrador de Partido-Politico</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700">Partido</label>
+        <select [(ngModel)]="editUser.partidoId" name="partidoId" class="w-full px-4 py-2 border rounded-lg">
+          <option value="">Selecciona un partido</option>
+          <option *ngFor="let partido of partidos" [value]="partido._id">{{ partido.nombre }}</option>
+        </select>
+      </div>
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Actualizar</button>
+      <button (click)="closeEditModal()" type="button" class="ml-2 text-gray-600 hover:text-gray-800">Cancelar</button>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="isDeleteModalOpen" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
+  <div class="bg-white rounded-lg p-6 w-96">
+    <h3 class="text-xl mb-4">¿Estás seguro de eliminar este usuario?</h3>
+    <button (click)="onDelete(deleteUserId)" class="bg-red-500 text-white px-4 py-2 rounded-lg">Eliminar</button>
+    <button (click)="closeDeleteModal()" type="button" class="ml-2 text-gray-600 hover:text-gray-800">Cancelar</button>
+  </div>
+</div>

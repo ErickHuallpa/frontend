@@ -26,6 +26,8 @@ export class CandidatoComponent implements OnInit {
   isLoadingPartidos = true;
   errorMessage = '';
   usuarioLogueado: boolean = false;
+  rolUsuario: string | null = null;
+  partidoIdUsuario: string | null = null;
   
   showEditModal = false;
   showDeleteModal = false;
@@ -81,6 +83,8 @@ export class CandidatoComponent implements OnInit {
     this.loadCandidatos();
     this.loadPartidos();
     this.usuarioLogueado = this.authService.isLoggedIn();
+    this.rolUsuario = this.authService.getRole();
+    this.partidoIdUsuario = this.authService.getPartidoId();
   }
 
   verPropuestas(candidato: Candidato): void {

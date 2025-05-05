@@ -22,6 +22,8 @@ export class PartidoPoliticoComponent implements OnInit {
   isLoading = true;
   errorMessage = '';
   usuarioLogueado: boolean = false;
+  rolUsuario: string | null = null;
+  partidoIdUsuario: string | null = null;
 
   showEditModal = false;
   showDeleteModal = false;
@@ -50,6 +52,8 @@ export class PartidoPoliticoComponent implements OnInit {
   ngOnInit(): void {
     this.loadPartidosPoliticos();
     this.usuarioLogueado = this.authService.isLoggedIn();
+    this.rolUsuario = this.authService.getRole();
+    this.partidoIdUsuario = this.authService.getPartidoId();
   }
 
   searchPartidos(): void {

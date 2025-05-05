@@ -18,6 +18,8 @@ import { AuthService } from '../../services/auth.service';
 export class DashboardComponent implements OnInit{
 
   isLoggedIn: boolean = false;
+  rolUsuario: string | null = null;
+  partidoIdUsuario: string | null = null;
 
   constructor(
     private authService: AuthService,
@@ -26,6 +28,8 @@ export class DashboardComponent implements OnInit{
 
   ngOnInit() {
     this.isLoggedIn = this.authService.isLoggedIn();
+    this.rolUsuario = this.authService.getRole();
+    this.partidoIdUsuario = this.authService.getPartidoId();
   }
 
   logout() {
