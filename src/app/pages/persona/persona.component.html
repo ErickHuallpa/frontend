@@ -1,1 +1,32 @@
-<p>persona works!</p>
+<div class="p-6">
+    <h2 class="text-2xl font-semibold mb-4">Lista de Personas</h2>
+  
+    <div *ngIf="personas.length === 0" class="text-gray-500">No hay personas registradas.</div>
+  
+    <div *ngIf="personas.length > 0" class="overflow-x-auto">
+      <table class="min-w-full table-auto border border-gray-200">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-2 text-left">Nombre</th>
+            <th class="px-4 py-2 text-left">Cédula</th>
+            <th class="px-4 py-2 text-left">Ciudad</th>
+            <th class="px-4 py-2 text-left">Fecha de Nacimiento</th>
+            <th class="px-4 py-2 text-left">¿Ya votó?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let persona of personas; let i = index" class="border-t">
+            <td class="px-4 py-2">{{ persona.nombres }} {{ persona.apellidos }}</td>
+            <td class="px-4 py-2">{{ persona.cedulaIdentidad }}</td>
+            <td class="px-4 py-2">{{ persona.ciudad }}</td>
+            <td class="px-4 py-2">{{ persona.fechaNacimiento | date: 'yyyy-MM-dd' }}</td>
+            <td class="px-4 py-2" [ngClass]="persona.yaVoto ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'">
+                {{ persona.yaVoto ? 'Sí' : 'No' }}
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

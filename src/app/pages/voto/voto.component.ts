@@ -21,6 +21,7 @@ export class VotoComponent implements OnInit {
   cedula: string = '';
   persona: Persona | null = null;
   error: string = '';
+  mostrarModalExito: boolean = false;
   candidatosPresidente: Candidato[] = [];
   candidatosGobernador: Candidato[] = [];
   partidos: PartidoPolitico[] = [];
@@ -69,7 +70,7 @@ export class VotoComponent implements OnInit {
     if (event.target.checked) {
       this.candidatoPresidenteSeleccionado = candidato;
     } else {
-      this.candidatoPresidenteSeleccionado = null; // Deselect if unchecked
+      this.candidatoPresidenteSeleccionado = null;
     }
   }
 
@@ -77,7 +78,7 @@ export class VotoComponent implements OnInit {
     if (event.target.checked) {
       this.candidatoGobernadorSeleccionado = candidato;
     } else {
-      this.candidatoGobernadorSeleccionado = null; // Deselect if unchecked
+      this.candidatoGobernadorSeleccionado = null;
     }
   }
 
@@ -102,9 +103,11 @@ export class VotoComponent implements OnInit {
     };
   
     this.votoService.votar(voto).subscribe({
-      next: (res) => {
-        this.mensajeExito = '✅ Voto registrado correctamente.';
-        this.validarCedula();
+      next: () => {
+        this.mostrarModalExito = true;
+        this.candidatoPresidenteSeleccionado = null;
+        this.candidatoGobernadorSeleccionado = null;
+        this.cedula = '';
       },
       error: (err) => {
         if (err.status === 400 && err.error?.message) {
@@ -115,7 +118,11 @@ export class VotoComponent implements OnInit {
       }
     });
   }
-  
+  cerrarModal() {
+    this.mostrarModalExito = false;
+    window.location.reload();
+  }    
+
   getSiglasDelPartido(partidoPoliticoId: string): string {
     const partido = this.partidos.find(p => p._id === partidoPoliticoId);
     return partido ? partido.siglas : 'Sin Partido';

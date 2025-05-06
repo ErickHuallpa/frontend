@@ -1,4 +1,3 @@
-// src/app/pages/login/login.component.ts
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -44,6 +43,9 @@ export class LoginComponent implements OnInit {
         this.errorMessage = err?.error?.message || 'Error al iniciar sesión';
       },
     });
+  }
+  goToDashboard() {
+    this.router.navigate(['/dashboard']);
   }
 }
 

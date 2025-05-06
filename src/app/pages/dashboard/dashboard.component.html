@@ -1,61 +1,43 @@
 <div class="min-h-screen flex flex-col">
   <div class="flex justify-between items-center px-6 pt-5 relative">
-    <p class="text-2xl text-green-800 custom-font z-10"><u>Órgano Electoral Plurinacional</u></p>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Escudo_de_Bolivia.svg/1200px-Escudo_de_Bolivia.svg.png" alt="Escudo de Bolivia" class="h-24 w-auto absolute left-1/2 transform -translate-x-1/2 z-0">
+    <img src="https://vectorseek.com/wp-content/uploads/2023/09/Estado-de-Bolivia-Logo-Vector.svg-.png" alt="Logo Bolivia" class="h-16 w-auto" />
     <div class="flex items-center space-x-4 z-10">
       <button routerLink="/dashboard/voto" class="bg-black text-white px-4 py-2 rounded">Votar</button>
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_oep.png/1200px-Logo_oep.png" alt="Logo" class="h-16 w-auto">
     </div>
   </div>
-    <header class="text-black text-center">
-      <h1 class="text-4xl font-bold custom-font">Elecciones Presidenciales Bolivia 2025</h1>
-    </header>
-    <nav class="bg-green-800 text-white p-3">
-        <div class="flex items-center justify-between">
-          <button class="flex items-center space-x-1 hover:text-yellow-400" routerLink="/dashboard">
-            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-              <path fill-rule="evenodd" d="M11.293 3.293a1 1 0 0 1 1.414 0l6 6 2 2a1 1 0 0 1-1.414 1.414L19 12.414V19a2 2 0 0 1-2 2h-3a1 1 0 0 1-1-1v-3h-2v3a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2v-6.586l-.293.293a1 1 0 0 1-1.414-1.414l2-2 6-6Z" clip-rule="evenodd"/>
-            </svg>            
+  <header class="text-black text-center">
+    <h1 class="text-4xl font-bold custom-font">Elecciones Presidenciales Bolivia 2025</h1>
+  </header>
+  <nav class="bg-green-800 text-white p-3">
+    <div class="flex items-center justify-between">
+      <div class="flex space-x-6">
+        <button class="flex items-center space-x-1 hover:text-yellow-400" routerLink="/dashboard">
+          <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            <path fill-rule="evenodd" d="M11.293 3.293a1 1 0 0 1 1.414 0l6 6 2 2a1 1 0 0 1-1.414 1.414L19 12.414V19a2 2 0 0 1-2 2h-3a1 1 0 0 1-1-1v-3h-2v3a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2v-6.586l-.293.293a1 1 0 0 1-1.414-1.414l2-2 6-6Z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+      </div>
+      <div class="flex items-center space-x-6">
+        <button routerLink="partido-politico" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Partidos Políticos</button>
+        <button routerLink="candidatos" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Candidatos</button>
+        <button *ngIf="(rolUsuario === 'admin')" routerLink="users" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Usuarios</button>
+        <button *ngIf="(rolUsuario === 'admin')" routerLink="dia-eleccion" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Día Elección</button>
+        <button *ngIf="(rolUsuario === 'admin')" routerLink="persona" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Persona</button>
+        <div>
+          <button *ngIf="isLoggedIn; else loginButton" (click)="logout()" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-800">
+            Cerrar Sesión
           </button>
-          <ul class="flex space-x-6">
-            <li>
-              <button routerLink="partido-politico" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Partidos Políticos</button>
-            </li>
-            <li>
-              <button routerLink="candidatos" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Candidatos</button>
-            </li>
-            <li>
-              <button *ngIf="(rolUsuario === 'admin')" routerLink="users" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Usuarios</button>
-            </li>
-            <li>
-              <button *ngIf="(rolUsuario === 'admin')" routerLink="dia-eleccion" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Dia elección</button>
-            </li>
-            <li>
-              <button *ngIf="(rolUsuario === 'admin')" routerLink="persona" class="px-4 py-2 bg-green-800 text-white rounded hover:bg-green-900">Persona</button>
-            </li>
-          </ul>
-          
-          <div>
-            <button 
-              *ngIf="isLoggedIn; else loginButton" 
-              (click)="logout()" 
-              class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-800">
-              Cerrar Sesión
+          <ng-template #loginButton>
+            <button (click)="goToLogin()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-800">
+              Iniciar Sesión
             </button>
-            <ng-template #loginButton>
-              <button 
-                (click)="goToLogin()" 
-                class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-800">
-                Iniciar Sesión
-              </button>
-            </ng-template>
-          </div>
+          </ng-template>
         </div>
-        
-    </nav>
-
-    <main class="flex-1 p-6 bg-gray-100">
-        <router-outlet></router-outlet>
-      </main>
-  </div>
-  
+      </div>
+    </div>
+  </nav>
+  <main class="flex-1 p-6 bg-gray-100">
+    <router-outlet></router-outlet>
+  </main>
+</div>

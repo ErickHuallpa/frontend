@@ -14,7 +14,6 @@ export interface MongoDBObjectId {
     yaVoto: boolean;
   }
   
-  // Función helper para extraer el ID como string
   export function getIdString(id: PersonaId): string {
     return typeof id === 'string' ? id : id.$oid;
   }

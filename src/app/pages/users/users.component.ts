@@ -30,6 +30,7 @@ export class UsersComponent implements OnInit {
   deleteUserId: string = '';
 
   partidos: PartidoPolitico[] = [];
+  partidosMap: { [id: string]: PartidoPolitico } = {};
 
   constructor(
     private userService: UserService,
@@ -66,13 +67,26 @@ export class UsersComponent implements OnInit {
     this.partidoPoliticoService.getPartidosPoliticos().subscribe(
       (partidos) => {
         this.partidos = partidos;
+        this.partidos.forEach(partido => {
+          this.partidosMap[partido._id as string] = partido;
+        });
       },
       (error) => {
         this.errorMessage = 'Error al cargar los partidos políticos';
       }
     );
   }
-
+  
+  getPartidoNombre(partidoId: string | null): string | null {
+    if (!partidoId) {
+      return null;
+    }
+    
+    const partido = this.partidosMap[partidoId];
+    return partido ? partido.nombre : null;
+  }
+  
+  
   openEditModal(user: User): void {
     this.editUser = { ...user };
     this.isEditModalOpen = true;
@@ -125,6 +139,5 @@ export class UsersComponent implements OnInit {
         this.errorMessage = 'Error al conectar con el servidor';
       }
     );
-  }
-    
+  } 
 }

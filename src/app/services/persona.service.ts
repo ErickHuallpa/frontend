@@ -17,4 +17,10 @@ export class PersonaService {
       `${this.apiUrl}/cedula/${cedula}`
     ).pipe(map(response => response.data));
   }
+
+  getAllPersonas(): Observable<Persona[]> {
+    return this.http.get<{ success: boolean; message: string; data: Persona[] }>(
+      this.apiUrl
+    ).pipe(map(response => response.data));
+  }
 }
